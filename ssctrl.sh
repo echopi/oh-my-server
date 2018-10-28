@@ -13,8 +13,8 @@ function start() {
   nohup sslocal -c $conf >/dev/null 2>&1 &
   # forward http to socks
   privoxy /etc/privoxy/config
-  
-  ps aux | grep -E 'sslocal|privoxy' | grep -v "grep"
+  echo "ps aux | grep -E 'sslocal|privoxy' | grep -v grep"
+  ps aux | grep -E 'sslocal|privoxy' | grep -v grep
 }
 
 function stop() {
@@ -46,6 +46,8 @@ init() {
   if hash pip 2>/dev/null; then
     if [ $(pip show shadowsocks | grep -a -m 1 Version | wc -l) == 1 ]; then
       echo "shadowsocks has already been installed."
+      
+      reconfig
       exit 0
     fi
   fi
@@ -53,11 +55,9 @@ init() {
   yum -y install python-pip
   pip install --upgrade pip
   pip install shadowsocks
-
-  server_config='{"server":"jp1-vip2.1x6kp.pw","server_port":51124,"local_address":"127.0.0.1","local_port":1086,"password":"pVAGMXX84kzn","timeout":300,"method":"chacha20-ietf-poly1305","workers":1,"fast_open":false}'
   # https://github.com/shadowsocks/shadowsocks/wiki/Configuration-via-Config-File
   # {
-  #   "server":"jp1-vip2.1x6kp.pw",
+  #   "server":"us2-vip2.1x6kp.pw",
   #   "server_port": 51124,
   #   "local_address": "127.0.0.1",
   #   "local_port": 1086,
@@ -67,8 +67,7 @@ init() {
   #   "workers": 1,
   #   "fast_open": false
   # }
-  mkdir -p /etc/shadowsocks
-  echo $server_config | python -m json.tool | tee /etc/shadowsocks/shadowsocks.json
+  
 
   # chacha20-ietf-poly1305
   # https://github.com/shadowsocksrr/shadowsocks-rss/wiki/libsodium
@@ -76,6 +75,15 @@ init() {
 
   # privoxy
   yum -y install privoxy
+
+  reconfig
+}
+
+function reconfig() {
+  server_config='{"server":"us2-vip2.1x6kp.pw","server_port":51124,"local_address":"127.0.0.1","local_port":1086,"password":"pVAGMXX84kzn","timeout":300,"method":"chacha20-ietf-poly1305","workers":1,"fast_open":false}'
+
+  mkdir -p /etc/shadowsocks
+  echo $server_config | python -m json.tool | tee /etc/shadowsocks/shadowsocks.json
   # vi /etc/privoxy/config
   # config
   # listen-address 127.0.0.1:8118
@@ -83,6 +91,7 @@ init() {
   sed -i -E 's/#[ ]*listen-address[ ]*127.0.0.1:8118/listen-address 127.0.0.1:8118/g' /etc/privoxy/config
   sed -i -E 's/#[ ]*forward-socks5t[ ]*\/[ ]*127.0.0.1:[0-9]* ./forward-socks5t \/ 127.0.0.1:1086 ./g' /etc/privoxy/config
 }
+
 
 # function http_proxy_start() {
 #   export http_proxy=http://127.0.0.1:8118;
