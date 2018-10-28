@@ -54,13 +54,13 @@ init() {
   pip install --upgrade pip
   pip install shadowsocks
 
-  server_config='{"server":"jp1-vip2.1x6kp.pw","server_port":51124,"local_address":"127.0.0.1","local_port":1080,"password":"pVAGMXX84kzn","timeout":300,"method":"chacha20-ietf-poly1305","workers":1,"fast_open":false}'
+  server_config='{"server":"jp1-vip2.1x6kp.pw","server_port":51124,"local_address":"127.0.0.1","local_port":1086,"password":"pVAGMXX84kzn","timeout":300,"method":"chacha20-ietf-poly1305","workers":1,"fast_open":false}'
   # https://github.com/shadowsocks/shadowsocks/wiki/Configuration-via-Config-File
   # {
   #   "server":"jp1-vip2.1x6kp.pw",
   #   "server_port": 51124,
   #   "local_address": "127.0.0.1",
-  #   "local_port": 1080,
+  #   "local_port": 1086,
   #   "password": "pVAGMXX84kzn"
   #   "timeout": 300,
   #   "method": "chacha20-ietf-poly1305",
@@ -79,9 +79,9 @@ init() {
   # vi /etc/privoxy/config
   # config
   # listen-address 127.0.0.1:8118
-  # forward-socks5t / 127.0.0.1:1080 .
+  # forward-socks5t / 127.0.0.1:1086 .
   sed -i -E 's/#[ ]*listen-address[ ]*127.0.0.1:8118/listen-address 127.0.0.1:8118/g' /etc/privoxy/config
-  sed -i -E 's/#[ ]*forward-socks5t[ ]*\/[ ]*127.0.0.1:[0-9]* ./forward-socks5t \/ 127.0.0.1:1080 ./g' /etc/privoxy/config
+  sed -i -E 's/#[ ]*forward-socks5t[ ]*\/[ ]*127.0.0.1:[0-9]* ./forward-socks5t \/ 127.0.0.1:1086 ./g' /etc/privoxy/config
 }
 
 # function http_proxy_start() {
